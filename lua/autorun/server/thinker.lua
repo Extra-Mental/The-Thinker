@@ -31,6 +31,7 @@ local Size = 0
 local Online = 1
 
 local GreetingConvar = CreateConVar("thinker_greeting", 1, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_ARCHIVE})
+local RandomSpeakConvar= CreateConVar("thinker_random", 1, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_ARCHIVE})
 
 util.AddNetworkString( "thinkermessage" )
 
@@ -322,3 +323,10 @@ local function Greet(Ply)
 	end
 end
 hook.Add( "PlayerInitialSpawn", "thinkergreet", Greet)
+
+local function RandomSpeak()
+	if(Online == 1 && RandomSpeakConvar:GetInt() != 0 && table.Count(player.GetAll()) > 0)then
+		SayAll(table.Random(Phrases))
+	end
+end
+timer.Create( "RandomSpeakThinker", 15*60, 0, RandomSpeak)
