@@ -125,7 +125,9 @@ local function Test(SaidPhrase) //used to debug
 		Winner = Database[math.Round(math.random( 1, #Database - 1))]
 	end
 
-	if Winner == nil then Winner = Database[math.Round(math.random( 1, #Database - 1))] end
+	PrintTable(Candidates)
+
+	if Winner == nil then Debug("Winner is nil") end
 
 	PrintAll(Winner)
 	//coroutine.yield()
