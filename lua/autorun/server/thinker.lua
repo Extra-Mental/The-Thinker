@@ -125,7 +125,7 @@ local Co =  coroutine.create(function(SaidPhrase) while true do
 			if Quota > BreakInt then
 				Quota = 0
 				coroutine.wait(BreakTime)
-
+				Debug("Paused coroutine temporarily")
 			end
 		end
 	end
