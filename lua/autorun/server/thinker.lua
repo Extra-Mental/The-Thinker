@@ -10,6 +10,7 @@ local TagColor = Color(0,255,0)
 local MinSaveChars = 5
 local MinSaveWords = 5
 local BreakInt = 5000
+local BreakTime = 0.1
 
 //Constants
 local Dir = "the_thinker"
@@ -78,7 +79,7 @@ local function LoadData()
 	end
 
 	local Data = file.Read(FileDir, "DATA")
-	local Database = string.Explode( "\n", Data)
+	Database = string.Explode( "\n", Data)
 	local Count = #Database
 	local Size = math.Round(file.Size(FileDir, "DATA")/1048576, 3)
 
@@ -91,15 +92,17 @@ ServerMessage("Loaded")
 
 //--------------------------------------------------------Loading database-----------------------------------------------------------------------------------
 LoadData()
+concommand.Add( "thinker_load", function() LoadData() end)
 
 //-------------------------------------------------------Searching---------------------------------------------------------------
-//local Co =  coroutine.create(function(SaidPhrase) while true do
-local function Test(SaidPhrase) //used to debug
+local Co =  coroutine.create(function(SaidPhrase) while true do
+//local function Test(SaidPhrase) //used to debug
 	table.remove(ItemsToProcess, 1)
 	Debug("Coroutine Resumed")
 
 	local Candidates = {}
 	local Winner = ""
+	local Quota = 0
 
 	SaidPhrase = NoPunc(SaidPhrase)
 	SaidPhrase = string.lower(SaidPhrase)
@@ -115,36 +118,45 @@ local function Test(SaidPhrase) //used to debug
 			if(string.find(PhraseLower, SaidKey, 0, false) and SaidKey != "") then
 				table.insert(Candidates, Phrase)
 				Debug("Added Candidate: " .. Phrase)
+				Quota = Quota + 1
+			end
+
+			Quota = Quota + 1
+			if Quota > BreakInt then
+				Quota = 0
+				coroutine.wait(BreakTime)
+
 			end
 		end
 	end
 
 	if #Candidates > 0 then
 		Winner = table.Random(Candidates)
-	else
+	elseif #Database > 0 then
 		Winner = Database[math.Round(math.random( 1, #Database - 1))]
+	else
+		Winner = "Error! Database not loaded!"
+		ServerMessage("Error! Database not loaded!")
 	end
 
-	PrintTable(Candidates)
-
-	if Winner == nil then Debug("Winner is nil") end
+	//PrintTable(Candidates)
 
 	PrintAll(Winner)
-	//coroutine.yield()
+	coroutine.yield()
 
-end //end)
+end end)
 
 hook.Add( "Think", "TheThinker", function()
 	if Enabled:GetInt() == 0 then return end
 
 	if #ItemsToProcess > 0 then
-		//Debug("Processes: " .. #ItemsToProcess)
-		//Debug(coroutine.status(Co))
-		//if coroutine.status(Co) ~= "dead" then
-			//Debug("Resuming Coroutine")
-			//coroutine.resume(Co, ItemsToProcess[1])
-			Test(ItemsToProcess[1])
-		//end
+		Debug("Processes: " .. #ItemsToProcess)
+		Debug(coroutine.status(Co))
+		if coroutine.status(Co) ~= "dead" then
+			Debug("Resuming Coroutine")
+			coroutine.resume(Co, ItemsToProcess[1])
+			//Test(ItemsToProcess[1])
+		end
 	end
 
 end)
