@@ -115,7 +115,7 @@ local Co =  coroutine.create(function(SaidPhrase) while true do
 		for B = 1, #SaidExplode do
 			local SaidKey = SaidExplode[B]
 
-			if(string.find(PhraseLower, SaidKey, 0, false) and SaidKey != "") then
+			if(string.find(NoPunc(PhraseLower), SaidKey, 0, false) and SaidKey != "") then
 				table.insert(Candidates, Phrase)
 				Debug("Added Candidate: " .. Phrase)
 				Quota = Quota + 1
