@@ -75,7 +75,7 @@ local function LoadData()
 	if !file.Exists(FileDir, "DATA") then
 		ServerMessage("No database found, creating new one.")
 		file.CreateDir(Dir)
-		file.Write(FilePath, "Hello, I am ".. Name .. ".\nType !Think <word/sentence> and I will reply with something.\nThe more active the chat is, the faster I learn!")
+		file.Write(FileDir, "Hello, I am ".. Name .. ".\nType !Think <word/sentence> and I will reply with something.\nThe more active the chat is, the faster I learn!")
 	end
 
 	local Data = file.Read(FileDir, "DATA")
