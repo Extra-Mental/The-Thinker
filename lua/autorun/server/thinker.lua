@@ -63,10 +63,10 @@ local function SavePhrase(Said)
 
 	Debug("Save")
 
-	table.insert(Database, Said)
+	table.insert(Database, #Database, Said)
 	FileAppend(Said)
 
-	PrintTable(Database)
+	//PrintTable(Database)
 
 end
 
@@ -132,8 +132,10 @@ local Co =  coroutine.create(function(SaidPhrase) while true do
 
 	if #Candidates > 0 then
 		Winner = table.Random(Candidates)
+		Debug("Chosen winner from candidates")
 	elseif #Database > 0 then
 		Winner = Database[math.Round(math.random( 1, #Database - 1))]
+		Debug("Chosen winner from random in database")
 	else
 		Winner = "Error! Database not loaded!"
 		ServerMessage("Error! Database not loaded!")
