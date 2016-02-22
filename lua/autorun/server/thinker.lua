@@ -95,10 +95,14 @@ LoadData()
 concommand.Add( "thinker_load", function() LoadData() end)
 
 //-------------------------------------------------------Searching---------------------------------------------------------------
-local Co =  coroutine.create(function(SaidPhrase) while true do
+local Co =  coroutine.create(function() while true do
 //local function Test(SaidPhrase) //used to debug
+	SaidPhrase = ItemsToProcess[1]
 	table.remove(ItemsToProcess, 1)
 	Debug("Coroutine Resumed")
+	Debug("Phrase to search with: " .. SaidPhrase)
+
+	PrintTable(ItemsToProcess)
 
 	local Candidates = {}
 	local Winner = ""
@@ -117,7 +121,8 @@ local Co =  coroutine.create(function(SaidPhrase) while true do
 
 			if(string.find(NoPunc(PhraseLower), SaidKey, 0, false) and SaidKey != "") then
 				table.insert(Candidates, Phrase)
-				Debug("Added Candidate: " .. Phrase)
+				//Debug("Matching word: " .. SaidKey)
+				//Debug("Added Candidate: " .. Phrase)
 				Quota = Quota + 1
 			end
 
@@ -156,8 +161,8 @@ hook.Add( "Think", "TheThinker", function()
 		Debug(coroutine.status(Co))
 		if coroutine.status(Co) ~= "dead" then
 			Debug("Resuming Coroutine")
-			coroutine.resume(Co, ItemsToProcess[1])
-			//Test(ItemsToProcess[1])
+			coroutine.resume(Co)
+			//Test()
 		end
 	end
 
