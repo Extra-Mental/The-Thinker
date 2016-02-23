@@ -9,7 +9,7 @@ local Name = "The Thinker"
 local TagColor = Color(0,255,0)
 local MinSaveChars = 5
 local MinSaveWords = 5
-local BreakInt = 5000
+local BreakInt = 20000
 local BreakTime = 0.1
 
 //Constants
@@ -123,7 +123,7 @@ local Co =  coroutine.create(function() while true do
 				table.insert(Candidates, Phrase)
 				//Debug("Matching word: " .. SaidKey)
 				//Debug("Added Candidate: " .. Phrase)
-				Quota = Quota + 1
+				//Quota = Quota + 1
 			end
 
 			Quota = Quota + 1
