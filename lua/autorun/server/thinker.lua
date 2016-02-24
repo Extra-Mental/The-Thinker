@@ -83,7 +83,7 @@ local function LoadData()
 	local Count = #Database
 	local Size = math.Round(file.Size(FileDir, "DATA")/1048576, 3)
 
-	ServerMessage("Loaded Database | Entries: " .. Count .. " | File Size: " .. Size .. " MB" )
+	ServerMessage("Loaded Database | Entries: " .. Count .. " | File Size: " .. Size .. " MB")
 
 end
 
@@ -184,5 +184,22 @@ hook.Add( "PlayerSay", "TheThinker", function( Ply, Said, Team )
 		Debug("Inserted to stack: " .. SaidNoCmd)
 		table.insert(ItemsToProcess, SaidNoCmd)
 	end
+
+end)
+
+
+//---------------------------------------------------Client Status Command-------------------------------------------------------
+util.AddNetworkString("ThinkerDebug")
+net.Receive("ThinkerDebug", function()
+	local Ply = net.ReadEntity()
+
+	ServerMessage(Ply:Nick() .. " requested status.")
+
+	local Count = #Database
+	local Size = math.Round(file.Size(FileDir, "DATA")/1048576, 3)
+
+	net.Start("ThinkerDebug")
+	net.WriteString("Entries: " .. Count .. " | File Size: " .. Size .. " MB")
+	net.Send(Ply)
 
 end)
