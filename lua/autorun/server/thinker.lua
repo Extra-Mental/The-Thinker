@@ -1,11 +1,14 @@
 //-------------------------------------------------------ConVars--------------------------------------------------------------
 local Enabled = CreateConVar("thinker_enabled", 1, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_ARCHIVE})
 local DebugOn = CreateConVar("thinker_debug", 0, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_ARCHIVE})
-
+local Name = CreateConVar("thinker_name", "The Thinker", {FCVAR_SERVER_CAN_EXECUTE, FCVAR_ARCHIVE})
+local ColR = CreateConVar("thinker_name_r", 0, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_ARCHIVE})
+local ColG = CreateConVar("thinker_name_g", 255, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_ARCHIVE})
+local ColB = CreateConVar("thinker_name_b", 0, {FCVAR_SERVER_CAN_EXECUTE, FCVAR_ARCHIVE})
 
 //-------------------------------------------------------Varariables-------------------------------------------------------------------------------
 //Settings
-local Name = "The Thinker"
+local RealName = "The Thinker"
 local TagColor = Color(0,255,0)
 local MinSaveChars = 5
 local MinSaveWords = 5
@@ -23,20 +26,20 @@ local ItemsToProcess = {}
 //--------------------------------------------------------Functions----------------------------------------------------------------------------------------
 //General server messages
 local function ServerMessage(Text)
-	print("["..Name.."]: " .. Text)
+	print("["..RealName.."]: " .. Text)
 end
 
 local function Debug(Text)
 	if DebugOn == 0 then return end
-	print("["..Name.." Debug]: " .. Text)
+	print("["..RealName.." Debug]: " .. Text)
 end
 
 util.AddNetworkString("ThinkerMessage")
 local function PrintAll(Message)
 	Debug("Printing: " .. Message)
 	net.Start("ThinkerMessage")
-	net.WriteColor(TagColor)
-	net.WriteString(Name)
+	net.WriteColor(Color(ColR:GetInt(), ColG:GetInt(), ColB:GetInt()))
+	net.WriteString(Name:GetString())
 	net.WriteString(Message)
 	net.Broadcast()
 end
@@ -75,7 +78,7 @@ local function LoadData()
 	if !file.Exists(FileDir, "DATA") then
 		ServerMessage("No database found, creating new one.")
 		file.CreateDir(Dir)
-		file.Write(FileDir, "Hello, I am ".. Name .. ".\nType !Think <word/sentence> and I will reply with something.\nThe more active the chat is, the faster I learn!")
+		file.Write(FileDir, "Hello, I am ".. RealName .. ".\nType !Think <word/sentence> and I will reply with something.\nThe more active the chat is, the faster I learn!")
 	end
 
 	local Data = file.Read(FileDir, "DATA")
