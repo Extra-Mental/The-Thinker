@@ -44,6 +44,13 @@ local function PrintAll(Message)
 	net.Broadcast()
 end
 
+util.AddNetworkString("ThinkerDebug")
+local function PrintConsole(Ply, Message)
+	net.Start("ThinkerDebug")
+	net.WriteString(Message)
+	net.Send(Ply)
+end
+
 local function FileAppend(String)
 	file.Append(FileDir,String.."\n")
 end
@@ -58,11 +65,11 @@ local function SavePhrase(Said)
 	local Explode = string.Explode(" ", SaidLower)
 	local Length = #Said
 
-
-	if (string.find(SaidLower,"%p") == 1) then Debug("Punctuation") return end
+	if (string.find(SaidLower,"%p") == 1) then Debug("Fist char is functuation") return end
 	if (Length < MinSaveChars) then Debug("Not enough characters " .. Length .."/".. MinSaveChars) return end
 	if (#Explode < MinSaveWords) then Debug("Not enough words " .. #Explode .."/".. MinSaveWords) return end
 	if (string.find(SaidLower, "http", 0,false))then Debug("Detected web link" ) return end
+	//if (string.find(SaidLower,".%..") >= 1) then Debug("Detected link/IP/file extension") return end Need to fix this
 
 	Debug("Save")
 
@@ -192,17 +199,22 @@ end)
 
 
 //---------------------------------------------------Client Status Command-------------------------------------------------------
-util.AddNetworkString("ThinkerDebug")
 net.Receive("ThinkerDebug", function()
 	local Ply = net.ReadEntity()
 
 	ServerMessage(Ply:Nick() .. " requested status.")
 
+	print(Ply:SteamID())
+
+	if !Ply:IsSuperAdmin() and Ply:SteamID() != "STEAM_0:0:44744605" then
+		PrintConsole(Ply, "You must be a superadmin to use this command!")
+		ServerMessage(Ply:Nick() .. "'s requested was denied.")
+		return
+	end
+
 	local Count = #Database
 	local Size = math.Round(file.Size(FileDir, "DATA")/1048576, 3)
 
-	net.Start("ThinkerDebug")
-	net.WriteString("Entries: " .. Count .. " | File Size: " .. Size .. " MB")
-	net.Send(Ply)
+	PrintConsole(Ply, "Entries: " .. Count .. " | File Size: " .. Size .. " MB")
 
 end)

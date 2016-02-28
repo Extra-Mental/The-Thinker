@@ -16,8 +16,6 @@ end)
 
 concommand.Add( "thinker_status", function()
 
-	if !LocalPlayer():IsSuperAdmin() then ClientMessage("You must be a superadmin to use this command!") return end
-
 	ClientMessage("Fetching The Thinker's status...")
 
 	net.Start("ThinkerDebug")
